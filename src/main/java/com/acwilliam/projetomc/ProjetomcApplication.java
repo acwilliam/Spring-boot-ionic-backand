@@ -1,5 +1,6 @@
 package com.acwilliam.projetomc;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +13,20 @@ import com.acwilliam.projetomc.domain.Cidade;
 import com.acwilliam.projetomc.domain.Cliente;
 import com.acwilliam.projetomc.domain.Endereco;
 import com.acwilliam.projetomc.domain.Estado;
+import com.acwilliam.projetomc.domain.Pagamento;
+import com.acwilliam.projetomc.domain.PagamentoComBoleto;
+import com.acwilliam.projetomc.domain.PagamentoComCartao;
+import com.acwilliam.projetomc.domain.Pedido;
 import com.acwilliam.projetomc.domain.Produto;
+import com.acwilliam.projetomc.domain.enums.EstadoPagamento;
 import com.acwilliam.projetomc.domain.enums.TipoCliente;
 import com.acwilliam.projetomc.repositories.CategoriaRepository;
 import com.acwilliam.projetomc.repositories.CidadeRepository;
 import com.acwilliam.projetomc.repositories.ClienteRepository;
 import com.acwilliam.projetomc.repositories.EnderecoRepository;
 import com.acwilliam.projetomc.repositories.EstadoRepository;
+import com.acwilliam.projetomc.repositories.PagamentoRepository;
+import com.acwilliam.projetomc.repositories.PedidoRepository;
 import com.acwilliam.projetomc.repositories.ProdutoRepository;
 
 @SpringBootApplication
@@ -26,21 +34,20 @@ public class ProjetomcApplication implements CommandLineRunner {
 	
 	@Autowired
 	CategoriaRepository categoriaRespository;//dependencia
-	
 	@Autowired
-	ProdutoRepository produtoRepository;//dependencia
-	
+	ProdutoRepository produtoRepository;
 	@Autowired
 	CidadeRepository cidadeRepository;
-	
 	@Autowired
 	EstadoRepository estadoRepository;
-	
 	@Autowired
 	ClienteRepository clienteRepository;
-	
 	@Autowired
 	EnderecoRepository enderecoRepository;
+	@Autowired
+	PedidoRepository pedidoRepository;
+	@Autowired
+	PagamentoRepository pagamentoRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ProjetomcApplication.class, args);
@@ -85,13 +92,28 @@ public class ProjetomcApplication implements CommandLineRunner {
 		cli1.getTelefones().addAll(Arrays.asList("27363323", "93838393"));
 		
 		Endereco e1 = new Endereco(null, "Rua Flores", "300", "apto 203", "Jardim", "37851605857", cli1, c1);
-		Endereco e2 = new Endereco(null, "Avenida Matos", "105", "Sala 800", "Centro", "38777012", cli1, c2);
+		Endereco e2 = new Endereco(null, "Avenida Matos", "105", "Sala 800", "Centro", "38777014562", cli1, c2);
 		
 		cli1.getEnderecos().addAll(Arrays.asList(e1,e2));
 		
 		clienteRepository.saveAll(Arrays.asList(cli1));
 		enderecoRepository.saveAll(Arrays.asList(e1, e2));
 		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyy HH:mm");
+		
+		Pedido ped1 = new Pedido(null, sdf.parse("30/09/2017 10:32"),cli1, e1);
+		Pedido ped2 = new Pedido(null, sdf.parse("10/10/201 19:38"), cli1, e2);
+		
+		Pagamento pagto1 = new PagamentoComCartao(null, EstadoPagamento.QUITADO, ped1, 6);
+		ped1.setPagamento(pagto1);
+		
+		Pagamento pagto2 = new PagamentoComBoleto(null, EstadoPagamento.PENDENTE, sdf.parse("20/10/2017 00:00"),ped2, null);
+		ped2.setPagamento(pagto2);
+		
+		cli1.getPedidos().addAll(Arrays.asList(ped1, ped2));
+				
+		pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
+		pagamentoRepository.saveAll(Arrays.asList(pagto1, pagto2));
 		
 	}
 	
