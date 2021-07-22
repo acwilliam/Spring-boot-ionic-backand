@@ -11,13 +11,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 @Entity
 public class Categoria implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
-	@JsonManagedReference
 	@ManyToMany(mappedBy="categorias")
 	public List<Produto> produtos = new ArrayList<>();//iniciando a coleção associada
 	
