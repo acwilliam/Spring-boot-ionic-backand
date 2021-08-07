@@ -1,6 +1,7 @@
 package com.acwilliam.projetomc.services;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.acwilliam.projetomc.domain.Cidade;
 import com.acwilliam.projetomc.domain.Cliente;
 import com.acwilliam.projetomc.domain.Endereco;
+import com.acwilliam.projetomc.domain.enums.Perfil;
 import com.acwilliam.projetomc.domain.enums.TipoCliente;
 import com.acwilliam.projetomc.dto.ClienteDTO;
 import com.acwilliam.projetomc.dto.ClienteNewDTO;
 import com.acwilliam.projetomc.repositories.ClienteRepository;
 import com.acwilliam.projetomc.repositories.EnderecoRepository;
+import com.acwilliam.projetomc.security.UserSS;
+import com.acwilliam.projetomc.services.exceptions.AuthorizationException;
 import com.acwilliam.projetomc.services.exceptions.DataIntegrityException;
 import com.acwilliam.projetomc.services.exceptions.ObjectNotFoundException;
 
@@ -38,6 +42,12 @@ public class ClienteService {
 	private EnderecoRepository enderecoRepository;
 	
 	public Cliente find(Integer id) {
+		
+		UserSS user = UserService.authenticated();
+		if(Objects.isNull(user) || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())) {
+			throw new AuthorizationException("Acesso Negado");
+		}
+		
 		Optional<Cliente> obj = repo.findById(id);
 		return obj.orElseThrow(() -> new ObjectNotFoundException(
 				"Objeto não encontrado! Id: " + id + ", Tipo: " + Cliente.class.getName()));
