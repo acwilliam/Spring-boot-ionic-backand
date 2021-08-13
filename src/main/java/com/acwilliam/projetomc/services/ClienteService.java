@@ -1,11 +1,13 @@
 package com.acwilliam.projetomc.services;
 
+import java.awt.image.BufferedImage;
 import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -46,6 +48,17 @@ public class ClienteService {
 	@Autowired
 	private S3Service s3Service;
 	
+
+	@Autowired
+	private ImagemService imagemService;
+	
+	@Value("${img.prefix.client.profile}")
+	private String prefixo;
+	
+	@Value("${img.profile.size}")
+	private Integer size;
+	
+
 	public Cliente find(Integer id) {
 		
 		UserSS user = UserService.authenticated();
@@ -125,10 +138,18 @@ public class ClienteService {
 		
 		URI uri = s3Service.uploadFile(multipartFile);
 		
+
 		Optional<Cliente> cliente = repo.findById(user.getId());
 		cliente.orElse(null).setImagemUrl(uri.toString());
 		repo.save(cliente.orElse(null));
+
+		BufferedImage jpgImagem = imagemService.getJpgImageFromFile(multipartFile);
 		
-		return uri;
+		jpgImagem = imagemService.cropSquare(jpgImagem);
+		jpgImagem = imagemService.resize(jpgImagem, size);
+		
+		String fileNome = prefixo + user.getId() + ".jpg";
+		
+		return s3Service.uploadFile(imagemService.getInputStream(jpgImagem, "jpg"), fileNome, "Imagem");
 	}
 }
