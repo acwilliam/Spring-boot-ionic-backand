@@ -45,7 +45,7 @@ public class Cliente implements Serializable{
 	
 	@ElementCollection
 	@CollectionTable(name="TELEFONE")
-	private Set<String> telefones = new HashSet<>();
+	private Set<String> telefones = new HashSet<>();//implementando o telefone como um conjunto de strings
 	
 	@ElementCollection(fetch=FetchType.EAGER)
 	@CollectionTable(name="PERFIS")
@@ -54,6 +54,8 @@ public class Cliente implements Serializable{
 	@JsonIgnore
 	@OneToMany(mappedBy="cliente")
 	private List<Pedido> pedidos = new ArrayList<>();
+	
+	private String imagemUrl;
 	
 	public Cliente() {
 		addPerfil(Perfil.CLIENTE);
@@ -148,6 +150,14 @@ public class Cliente implements Serializable{
 
 	public void setPedidos(List<Pedido> pedidos) {
 		this.pedidos = pedidos;
+	}
+
+	public String getImagemUrl() {
+		return imagemUrl;
+	}
+
+	public void setImagemUrl(String imagemUrl) {
+		this.imagemUrl = imagemUrl;
 	}
 
 	@Override
