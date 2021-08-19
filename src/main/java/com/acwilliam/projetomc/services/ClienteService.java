@@ -99,6 +99,20 @@ public class ClienteService {
 		return repo.findAll();
 	}
 	
+	public Cliente findByEmail(String email) {
+		UserSS user = UserService.authenticated();
+		if (user == null || !user.hasRole(Perfil.ADMIN) && !email.equals(user.getUsername())) {
+			throw new AuthorizationException("Acesso negado");
+		}
+	
+		Cliente obj = repo.findByEmail(email);
+		if (obj == null) {
+			throw new ObjectNotFoundException(
+					"Objeto não encontrado! Id: " + user.getId() + ", Tipo: " + Cliente.class.getName());
+		}
+		return obj;
+	}
+	
 	public Page<Cliente> findPage(Integer page, Integer linesPerPage, String orderBy, String direction ){
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 		return repo.findAll(pageRequest);
@@ -129,27 +143,15 @@ public class ClienteService {
 		newObj.setEmail(obj.getEmail());
 	}
 	
-	public URI uploadProfilePricture(MultipartFile multipartFile) {
-		
+	public URI uploadProfilePicture(MultipartFile multipartFile) {
 		UserSS user = UserService.authenticated();
-		if(Objects.isNull(user)) {
-			throw new AuthorizationException("Acesso negado!");
+		if (Objects.isNull(user)) {
+			throw new AuthorizationException("Acesso negado");
 		}
-		
-		URI uri = s3Service.uploadFile(multipartFile);
-		
 
-		Optional<Cliente> cliente = repo.findById(user.getId());
-		cliente.orElse(null).setImagemUrl(uri.toString());
-		repo.save(cliente.orElse(null));
+		BufferedImage jpgImage = imagemService.getJpgImageFromFile(multipartFile);
+		String fileName = prefixo + user.getId() + ".jpg";
 
-		BufferedImage jpgImagem = imagemService.getJpgImageFromFile(multipartFile);
-		
-		jpgImagem = imagemService.cropSquare(jpgImagem);
-		jpgImagem = imagemService.resize(jpgImagem, size);
-		
-		String fileNome = prefixo + user.getId() + ".jpg";
-		
-		return s3Service.uploadFile(imagemService.getInputStream(jpgImagem, "jpg"), fileNome, "Imagem");
+		return s3Service.uploadFile(imagemService.getInputStream(jpgImage, "jpg"), fileName, "imagem");
 	}
 }
