@@ -60,25 +60,25 @@ public class DBService {
 	public void instantiateTestDatabase() throws ParseException {
 		
 		
-		Categoria cat1 = new Categoria(null, "Informática");
-		Categoria cat2 = new Categoria(null, "Escritório");
-		Categoria cat3 = new Categoria(null, "Cama mesa e banho");
-		Categoria cat4 = new Categoria(null, "Eletronicos");
-		Categoria cat5 = new Categoria(null, "Jardinagem");
-		Categoria cat6 = new Categoria(null, "Decoração");
-		Categoria cat7 = new Categoria(null, "Perfumaria");
+		Categoria cat1 = new Categoria(null, "Pizza Familia");
+		Categoria cat2 = new Categoria(null, "Pizza Broto");
+		Categoria cat3 = new Categoria(null, "Lanche");
+		Categoria cat4 = new Categoria(null, "Massas");
+		Categoria cat5 = new Categoria(null, "Pizza Doce");
+		Categoria cat6 = new Categoria(null, "Sucos");
+		Categoria cat7 = new Categoria(null, "Refrigerantes");
 		
-		Produto p1 = new Produto(null, "Computador", 2000.00);
-		Produto p2 = new Produto(null, "Impressora", 800.00);
-		Produto p3 = new Produto(null, "Mouse", 80.00);
-		Produto p4 = new Produto(null, "Mesa de Escritorio", 300.00);
-		Produto p5 = new Produto(null, "Toalha", 50.00);
-		Produto p6 = new Produto(null, "Colcha", 200.00);
-		Produto p7 = new Produto(null, "TV true Color", 1200.00);
-		Produto p8 = new Produto(null, "Roçadeira", 800.00);
-		Produto p9 = new Produto(null, "Abajour", 100.00);
-		Produto p10 = new Produto(null, "Guarda Roupa", 180.00);
-		Produto p11 = new Produto(null, "Shampoo", 90.00);
+		Produto p1 = new Produto(null, "Produto 1", 50.00);
+		Produto p2 = new Produto(null, "Produto 2", 50.00);
+		Produto p3 = new Produto(null, "Produto 3", 50.00);
+		Produto p4 = new Produto(null, "Produto 4", 50.00);
+		Produto p5 = new Produto(null, "Produto 5", 50.00);
+		Produto p6 = new Produto(null, "Produto 6", 50.00);
+		Produto p7 = new Produto(null, "Produto 7", 50.00);
+		Produto p8 = new Produto(null, "Produto 8", 50.00);
+		Produto p9 = new Produto(null, "Produto 9", 50.00);
+		Produto p10 = new Produto(null, "Produto 10", 50.00);
+		Produto p11 = new Produto(null, "Produto 11", 90.00);
 		Produto p12 = new Produto(null, "Produto 12", 10.00);
 		Produto p13 = new Produto(null, "Produto 13", 10.00);
 		Produto p14 = new Produto(null, "Produto 14", 10.00);
@@ -194,7 +194,7 @@ public class DBService {
 		
 		Cidade c1 = new Cidade(null, "Uberlandia", est1);
 		Cidade c2 = new Cidade(null, "São Paulo", est2);
-		Cidade c3 = new Cidade(null, "Campinas", est2);
+		Cidade c3 = new Cidade(null, "Guarulhos", est2);
 		
 		est1.getCidades().addAll(Arrays.asList(c1));
 		est2.getCidades().addAll(Arrays.asList(c2, c3));
@@ -210,7 +210,7 @@ public class DBService {
 		cli2.getTelefones().addAll(Arrays.asList("959894658","456585465"));
 		cli2.addPerfil(Perfil.ADMIN);
 		
-		Endereco e1 = new Endereco(null, "Rua Flores", "300", "apto 203", "Jardim", "37851605857", cli1, c1);
+		Endereco e1 = new Endereco(null, "Rua Flores", "300", "apto 203", "Jardim", "37851605857", cli2, c2);
 		Endereco e2 = new Endereco(null, "Avenida Matos", "105", "Sala 800", "Centro", "38777014562", cli1, c2);
 		Endereco e3 = new Endereco(null, "Avenida river", "405", "ap 800", "Centro", "7894568456", cli2, c2);
 		

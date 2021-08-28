@@ -2,7 +2,7 @@ package com.acwilliam.projetomc.resources.exception;
 
 import java.io.Serializable;
 
-public class FieldMessage  implements Serializable {
+public class FieldMessage implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String fieldName;
@@ -11,9 +11,9 @@ public class FieldMessage  implements Serializable {
 	public FieldMessage() {
 	}
 
-	public FieldMessage(String fildName, String message) {
+	public FieldMessage(String fieldName, String message) {
 		super();
-		this.fieldName = fildName;
+		this.fieldName = fieldName;
 		this.message = message;
 	}
 
@@ -21,8 +21,8 @@ public class FieldMessage  implements Serializable {
 		return fieldName;
 	}
 
-	public void setFieldName(String fildName) {
-		this.fieldName = fildName;
+	public void setFieldName(String fieldName) {
+		this.fieldName = fieldName;
 	}
 
 	public String getMessage() {

@@ -2,15 +2,11 @@ package com.acwilliam.projetomc.services.validation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.servlet.HandlerMapping;
 
 import com.acwilliam.projetomc.domain.Cliente;
 import com.acwilliam.projetomc.domain.enums.TipoCliente;
@@ -20,10 +16,10 @@ import com.acwilliam.projetomc.resources.exception.FieldMessage;
 import com.acwilliam.projetomc.services.validation.utils.BR;
 
 public class ClienteInsertValidator implements ConstraintValidator<ClienteInsert, ClienteNewDTO> {
-	
+
 	@Autowired
 	private ClienteRepository repo;
-
+	
 	@Override
 	public void initialize(ClienteInsert ann) {
 	}
@@ -33,8 +29,7 @@ public class ClienteInsertValidator implements ConstraintValidator<ClienteInsert
 		
 		List<FieldMessage> list = new ArrayList<>();
 		
-		if (Objects.nonNull(objDto.getTipo()) && objDto.getTipo().equals(TipoCliente.PESSOAFISICA.getCod()) && !BR.isValidCPF(objDto.getCpfOuCnpj())) {
-			
+		if (objDto.getTipo().equals(TipoCliente.PESSOAFISICA.getCod()) && !BR.isValidCPF(objDto.getCpfOuCnpj())) {
 			list.add(new FieldMessage("cpfOuCnpj", "CPF inválido"));
 		}
 
@@ -42,12 +37,16 @@ public class ClienteInsertValidator implements ConstraintValidator<ClienteInsert
 			list.add(new FieldMessage("cpfOuCnpj", "CNPJ inválido"));
 		}
 
+		Cliente aux = repo.findByEmail(objDto.getEmail());
+		if (aux != null) {
+			list.add(new FieldMessage("email", "Email já existente"));
+		}
+		
 		for (FieldMessage e : list) {
 			context.disableDefaultConstraintViolation();
 			context.buildConstraintViolationWithTemplate(e.getMessage()).addPropertyNode(e.getFieldName())
 					.addConstraintViolation();
 		}
 		return list.isEmpty();
-
 	}
 }
